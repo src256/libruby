@@ -38,9 +38,12 @@ module Libruby
       result = ''
       number_blocks.each_with_index do |block, index|
         u = index > 0 ? units[index - 1] : ''
-        result = block.reverse.join + u + result
+
+        number_str = block.reverse.join
+        unless number_str =~ /^0+$/
+          result = number_str + u + result
+        end
       end
-      result.sub!(/万0+/, '万')
       result 
     end
 

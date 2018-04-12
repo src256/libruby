@@ -66,7 +66,10 @@ class UnitConverterUtilsTest < Minitest::Test
     assert_equal("7億5000万", result)
 
     result = UnitConverterUtils.ja("20000000") # 20 million
-    assert_equal("2000万", result)    
+    assert_equal("2000万", result)
+
+    result = UnitConverterUtils.ja("1000000000") # 1000 million
+    assert_equal("10億", result)    
   end
   
   def test_to_comma_s
