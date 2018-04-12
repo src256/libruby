@@ -47,9 +47,9 @@ module Libruby
     def self.to_ja_s(num)
       s = to_s(num)      
       if s =~ /(\d+)(\.\d+)/
-        result = comma($1) + $2
+        result = ja($1) + $2
       else
-        result = comma(s)
+        result = ja(s)
       end
       result
     end
@@ -59,22 +59,30 @@ module Libruby
   class UnitConverterResult
     TYPE_ORIGINAL = 1
     TYPE_NUMBER = 2
-    TYPE_JA = 3
+    TYPE_EN = 3    
+    TYPE_JA = 4
 
-    TYPE_LABELS = [
+    TYPE_LABELS = {
       TYPE_ORIGINAL => 'オリジナル',
       TYPE_NUMBER => '数値表現',
       TYPE_JA => '日本語表現'
-    ]
+    }
+
+    def self.find(results, type)
+      results.find{|result| result.type == type}
+    end
 
     def self.create_original(value)
       UnitConverterResult.new(TYPE_ORIGINAL, value)
     end
 
     def self.create_number(value)
-      # ほんとはカンマ区切りにしたい整数部と小数部にわけて三桁区切りにする必要あり？
       UnitConverterResult.new(TYPE_NUMBER, UnitConverterUtils.to_comma_s(value))
     end
+
+    def self.create_ja(value)
+      UnitConverterResult.new(TYPE_JA, UnitConverterUtils.to_ja_s(value))
+    end    
 
     def initialize(type, value)
       @type = type
@@ -83,7 +91,11 @@ module Libruby
     attr_reader :type, :value
 
     def type_label
-      TYPE_LABELS[type]
+      TYPE_LABELS[@type]
+    end
+
+    def to_s
+      "#{@type}:#{type_label}:#{value}"
     end
   end
 
@@ -123,7 +135,8 @@ module Libruby
         original_num = get_num(value)
         unit = get_unit(value)
         num = calc_num(original_num, unit)
-        result << UnitConverterResult.create_number(value)
+        results << UnitConverterResult.create_number(num)
+        results << UnitConverterResult.create_ja(num)
       rescue ArgumentError => e
         puts e.to_s
       end
