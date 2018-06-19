@@ -1,5 +1,6 @@
 require "libruby/version"
 require "libruby/file_utils"
+require "libruby/date_utils"
 require "libruby/misc_utils"
 require "libruby/multi_io"
 
